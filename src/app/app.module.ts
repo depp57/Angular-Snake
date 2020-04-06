@@ -8,7 +8,7 @@ import { FooterComponent } from './footer/footer.component';
 import { ScoreboardComponent } from './scoreboard/scoreboard.component';
 import { SigninComponent } from './signin/signin.component';
 import { GameComponent } from './game/game.component';
-import {AuthGuardService} from './services/auth-guard.service';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -21,11 +21,11 @@ import {AuthGuardService} from './services/auth-guard.service';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: [
-    AuthGuardService
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

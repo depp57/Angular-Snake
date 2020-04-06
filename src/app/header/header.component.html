@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-between mb-5 wood">
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-between mb-5 wood above">
 
   <li class="nav-item navbar-brand navbar-nav">
     <button class="btn btn-dark" routerLink="game"
@@ -12,12 +12,12 @@
     </li>
     <li class="nav-item" *ngIf="!isAuth; else signOutBloc">
       <button class="btn btn-dark ml-2" routerLink=""
-         routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Accueil</button>
+         routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">S'Inscrire</button>
     </li>
   </ul>
 
   <ng-template #signOutBloc>
-    <button class="nav-item btn btn-primary" (click)="onSignOut()">
+    <button class="nav-item btn btn-dark ml-2" (click)="onSignOut()">
       Se déconnecter
     </button>
   </ng-template>
