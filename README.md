@@ -1,4 +1,4 @@
-# AngularSnake ![alt text](./src/assets/snake.png "Logo Title Text 1")
+# AngularSnake ![alt text](src/favicon.ico "Logo Title Text 1")
 
 A simple snake game implemented in Javascript with Angular.js !
 
