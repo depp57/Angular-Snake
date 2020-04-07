@@ -17,7 +17,7 @@ export class AuthGuardService implements CanActivate, OnDestroy {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (!this.isAuth) {
-      this.router.navigate(['signin']);
+      this.router.navigate(['signup']);
       return false;
     }
     return true;

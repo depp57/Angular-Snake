@@ -1,6 +1,6 @@
 <div id="backGroundJungle" class="mt-n5">
   <div id="loginFormContainer">
-    <form id="loginForm" [formGroup]="signUpForm" (ngSubmit)="onSignUp()">
+    <form id="loginForm" [formGroup]="loginForm">
 
       <div class="form-group w-25">
         <label for="name" class="badge-pill badge-dark">Pseudo</label>
@@ -10,13 +10,17 @@
 
       <div class="form-group w-25">
         <label for="password" class="badge-pill badge-dark">Mot de passe</label>
-        <input type="password" id="password" autocomplete="new-password"
+        <input type="password" id="password" autocomplete="current-password"
                class="form-control" formControlName="password" placeholder="Mot de passe">
       </div>
 
-      <button class="btn btn-success btn-lg" [disabled]="signUpForm.invalid"
-              type="submit">Créer le compte
+
+      <button class="btn btn-success btn-lg mr-2" [disabled]="loginForm.invalid"
+              type="submit" (click)="onSignUp()">Créer un compte
       </button>
+
+      <button class="btn btn-success btn-lg ml-2" [disabled]="loginForm.invalid"
+              type="button" (click)="onSignIn()">Se connecter</button>
 
       <div class="alert-danger w-25">{{ errorMessage }}</div>
     </form>

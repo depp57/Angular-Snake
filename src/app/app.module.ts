@@ -6,9 +6,9 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { ScoreboardComponent } from './scoreboard/scoreboard.component';
-import { SigninComponent } from './signin/signin.component';
 import { GameComponent } from './game/game.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -16,8 +16,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     HeaderComponent,
     FooterComponent,
     ScoreboardComponent,
-    SigninComponent,
-    GameComponent
+    GameComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

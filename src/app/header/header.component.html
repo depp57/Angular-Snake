@@ -5,20 +5,25 @@
        routerLinkActive="active">Jouer</button>
   </li>
 
-  <ul class="navbar-nav navbar-brand">
+  <ul class="navbar-nav navbar-brand" *ngIf="!isAuth; else loggedInBloc">
     <li class="nav-item">
-      <button class="btn btn-dark" routerLink="scoreboard"
-         routerLinkActive="active">Classement</button>
-    </li>
-    <li class="nav-item" *ngIf="!isAuth; else signOutBloc">
       <button class="btn btn-dark ml-2" routerLink=""
-         routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">S'Inscrire</button>
+              routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">S'Inscrire</button>
+    </li>
+    <li class="nav-item">
+      <button class="btn btn-dark ml-2" routerLink=""
+              routerLinkActive="active">Se connecter</button>
     </li>
   </ul>
 
-  <ng-template #signOutBloc>
-    <button class="nav-item btn btn-dark ml-2" (click)="onSignOut()">
-      Se déconnecter
-    </button>
+  <ng-template #loggedInBloc>
+    <ul class="navbar-nav navbar-brand">
+      <li class="nav-item">
+        <button class="btn btn-dark" routerLink="scoreboard" routerLinkActive="active">Classement</button>
+      </li>
+      <li class="nav-item">
+        <button class="btn btn-dark ml-2" (click)="onSignOut()">Se déconnecter</button>
+      </li>
+    </ul>
   </ng-template>
 </nav>
