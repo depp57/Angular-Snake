@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import * as firebase from 'firebase/app';
+import {AudioService} from './services/audio.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,7 @@ import * as firebase from 'firebase/app';
 })
 export class AppComponent {
 
-  constructor() {
+  constructor(audioService: AudioService) {
     const conf = {
       apiKey: 'AIzaSyATAN9KSZpTzXfAoSKunBLTI8Jm5vSrNDs',
       authDomain: 'angularsnake-bf5da.firebaseapp.com',
@@ -20,5 +21,8 @@ export class AppComponent {
     };
     // Initialize Firebase
     firebase.initializeApp(conf);
+
+    // Start the background music
+    audioService.playAudio('jungleMusic.mp3');
   }
 }
