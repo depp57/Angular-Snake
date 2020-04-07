@@ -23,6 +23,10 @@ export class AppComponent {
     firebase.initializeApp(conf);
 
     // Start the background music
-    audioService.playAudio('jungleMusic.mp3');
+    const listener = () => {
+      audioService.playAudio('jungleMusic.mp3');
+      document.removeEventListener('click', listener);
+    };
+    document.addEventListener('click', listener);
   }
 }
