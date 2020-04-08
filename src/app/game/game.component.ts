@@ -58,7 +58,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   startGame(difficulty: GameDifficulties) {
-    // Add the keys listener
+    // Add the keys listener for web and mobile
     this.addKeyListener();
 
     // Clear the menu
@@ -118,23 +118,35 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private addOneTimeClickListener() {
     const oneTimeClickListener = (e) => {
-      this.canvas.removeEventListener('click', oneTimeClickListener);
 
       const deltaX = Math.abs(e.x - this.canvasWmid);
       const deltaY = e.y - this.canvasHmid - 22;
 
       // Some spaghetti maths to compute the selected button
       if (deltaX < 100) {
-        if (deltaY > -100 && deltaY < -60) this.startGame(GameDifficulties.EASY);
-        else if (deltaY > -20 && deltaY < 20) this.startGame(GameDifficulties.MEDIUM);
-        else if (deltaY > 50 && deltaY < 100) this.startGame(GameDifficulties.HARD);
+        let started = false;
+
+        if (deltaY > -100 && deltaY < -60) {
+          this.startGame(GameDifficulties.EASY);
+          started = true;
+        }
+        else if (deltaY > -20 && deltaY < 20) {
+          this.startGame(GameDifficulties.MEDIUM);
+          started = true;
+        }
+        else if (deltaY > 50 && deltaY < 100) {
+          this.startGame(GameDifficulties.HARD);
+          started = true;
+        }
+
+        if (started) this.canvas.removeEventListener('click', oneTimeClickListener);
       }
     };
     this.canvas.addEventListener('click', oneTimeClickListener);
   }
 
   private addKeyListener() {
-    this.canvas.addEventListener('keydown', (e) => {
+    const keyListener = (e) => {
       switch (e.key) {
         case 'w' : case 'z' : case 'ArrowUp' :
           this.gameService.changeDirection(Direction.NORTH);
@@ -149,6 +161,51 @@ export class GameComponent implements OnInit, OnDestroy {
           this.gameService.changeDirection(Direction.WEST);
           break;
       }
-    });
+    };
+    // Remove if there is an older listener
+    this.canvas.removeEventListener('kewdown', keyListener);
+    this.canvas.addEventListener('keydown', keyListener);
+
+
+    // Swipe Up / Down / Left / Right
+    let initialX = null;
+    let initialY = null;
+
+    const startTouch = e => {
+      initialX = e.touches[0].clientX;
+      initialY = e.touches[0].clientY;
+    };
+
+    const moveTouch = e => {
+      if (initialX === null) {
+        return;
+      }
+
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+
+      const deltaX = currentX - initialX;
+      const deltaY = currentY - initialY;
+
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX > 0) this.gameService.changeDirection(Direction.EAST);
+        else this.gameService.changeDirection(Direction.WEST);
+      }
+      else {
+        if (deltaY > 0) this.gameService.changeDirection(Direction.SOUTH);
+        else this.gameService.changeDirection(Direction.NORTH);
+      }
+
+      initialX = null;
+      initialY = null;
+
+      e.preventDefault();
+    };
+
+    // Remove if there is an older listener
+    this.canvas.removeEventListener('touchstart', startTouch);
+    this.canvas.removeEventListener('touchmove', moveTouch);
+    this.canvas.addEventListener('touchstart', startTouch);
+    this.canvas.addEventListener('touchmove', moveTouch);
   }
 }

@@ -31,7 +31,9 @@ export class GameService {
   private lengthX: number;
   private lengthY: number;
 
-  currentDirection = Direction.SOUTH;
+  private currentDirection = Direction.SOUTH;
+  private hasMoved = false;
+
   private ended: boolean;
 
   startGame(difficulty: GameDifficulties) {
@@ -113,6 +115,7 @@ export class GameService {
     }
 
     this.checkCollision();
+    this.hasMoved = true;
   }
 
   private isInGrid(x: number, y: number) {
@@ -120,8 +123,9 @@ export class GameService {
   }
 
   changeDirection(direction: {x: number; y: number}) {
-    if (this.currentDirection.x !== direction.x && this.currentDirection.y !== direction.y) {
+    if (this.hasMoved && this.currentDirection.x !== direction.x && this.currentDirection.y !== direction.y) {
       this.currentDirection = direction;
+      this.hasMoved = false;
     }
   }
 
