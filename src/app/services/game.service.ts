@@ -36,12 +36,13 @@ export class GameService {
 
   private ended: boolean;
 
-  startGame(difficulty: GameDifficulties) {
+  startGame(difficulty: GameDifficulties, lengthX: number, lengthY: number) {
     this.difficulty = difficulty;
+    this.ended = false;
     this.score = 0;
     this.scoreSubject.next(this.score);
-    this.lengthY = window.innerHeight / 50;
-    this.lengthX = Math.floor(this.lengthY * (window.innerWidth / window.innerHeight));
+    this.lengthX = lengthX;
+    this.lengthY = lengthY;
 
     // Emit the 'first' snake and apple
     this.snake = new SnakeModel([
@@ -104,13 +105,13 @@ export class GameService {
         this.snake.cells.unshift({x: 0, y: head.y});
       }
       else if (this.currentDirection.x === -1) {
-        this.snake.cells.unshift({x: this.lengthX, y: head.y});
+        this.snake.cells.unshift({x: this.lengthX - 1, y: head.y});
       }
       else if (this.currentDirection.y === 1) {
         this.snake.cells.unshift({x: head.x, y: 0});
       }
       else {
-        this.snake.cells.unshift({x: head.x, y: this.lengthY});
+        this.snake.cells.unshift({x: head.x, y: this.lengthY - 1});
       }
     }
 

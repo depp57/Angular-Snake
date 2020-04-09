@@ -17,6 +17,8 @@ export class GameComponent implements OnInit, OnDestroy {
   canvasCtx: CanvasRenderingContext2D;
   canvasWmid: number;
   canvasHmid: number;
+  radiusX;
+  radiusY;
 
   snakeSubscription: Subscription;
 
@@ -69,10 +71,21 @@ export class GameComponent implements OnInit, OnDestroy {
       snake => this.drawSnake(snake)
     );
 
-    this.gameService.startGame(difficulty);
+    // Dynamically compute the length of the map, to make the game fit the entire screen responsively
+    const lengthX = 17;
+    const lengthY = Math.floor(lengthX * this.canvas.height / this.canvas.width);
+    this.radiusX = this.canvas.width / lengthX / 2;
+    this.radiusY = this.canvas.height / lengthY / 2;
+
+    if (lengthY < 8) {
+      alert('Désolé, votre écran est trop petit pour le serpent :/');
+      return;
+    }
+
+    this.gameService.startGame(difficulty, lengthX, lengthY);
 
     const step = t1 => t2 => {
-      if (t2 - t1 > 100) {
+      if (t2 - t1 > 60) {
         this.gameService.nextStep();
         this.animationFrameId = window.requestAnimationFrame(step(t2));
       }
@@ -91,22 +104,23 @@ export class GameComponent implements OnInit, OnDestroy {
     this.canvasCtx.fillStyle = 'green';
     snake.cells.forEach(
       cell => {
-        const radius = this.canvas.height / 40;
-        this.canvasCtx.arc(cell.x * radius * 2, cell.y * radius * 2,
-          radius, 0, 2 * Math.PI, false);
+        this.canvasCtx.ellipse(this.radiusX * 2 * cell.x + this.radiusX, this.radiusY * 2 * cell.y + this.radiusY,
+          this.radiusX, this.radiusY,
+          0, 0, 2 * Math.PI);
+
         this.canvasCtx.fill();
         this.canvasCtx.closePath();
       }
     );
-
     this.drawApple(this.gameService.apple);
   }
 
   private drawApple(apple: AppleModel) {
     this.canvasCtx.beginPath();
     this.canvasCtx.fillStyle = 'red';
-    const radius = this.canvas.height / 40;
-    this.canvasCtx.arc(apple.x * radius * 2, apple.y * radius * 2, radius, 0, 2 * Math.PI, false);
+    this.canvasCtx.ellipse(this.radiusX * apple.x * 2 + this.radiusX, this.radiusY * 2 * apple.y + this.radiusY,
+      this.radiusX, this.radiusY,
+      0, 0, 2 * Math.PI);
     this.canvasCtx.fill();
   }
 
