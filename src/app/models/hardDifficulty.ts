@@ -1,5 +1,6 @@
 import {Difficulty, isInGrid} from './difficulty';
 import {SnakeModel} from './snake.model';
+import {AppleModel} from './apple.model';
 
 export class HardDifficulty implements Difficulty {
 
@@ -46,6 +47,20 @@ export class HardDifficulty implements Difficulty {
     }
 
     return false;
+  }
+
+  generateApple(snake: SnakeModel, lengthX: number, lengthY: number): AppleModel {
+    let x = Math.floor(Math.random() * lengthX);
+    let y = Math.floor(Math.random() * lengthY);
+
+    // Because we don't want the apple to be on the snake nor on a rock
+    while (snake.cells.some(e => e.x === x && e.y === y)
+    || this.rocks.some(rock => Math.abs(rock.x - x) < 2 && Math.abs(rock.y - y) < 2)) {
+      x = Math.floor(Math.random() * lengthX);
+      y = Math.floor(Math.random() * lengthY);
+    }
+
+    return new AppleModel(x, y);
   }
 
   private checkRockCollision(x: number, y: number) {

@@ -77,25 +77,12 @@ export class GameService {
     }
     this.difficulty = diff;
 
-    this.apple = this.generateApple();
+    this.apple = this.difficulty.generateApple(this.snake, this.lengthX, this.lengthY);
     this.emitSnake();
   }
 
   private emitSnake() {
     this.snakeSubject.next(this.snake);
-  }
-
-  private generateApple(): AppleModel {
-    let x = Math.floor(Math.random() * this.lengthX);
-    let y = Math.floor(Math.random() * this.lengthY);
-
-    // Because we don't want the apple to be on the snake
-    while (this.snake.cells.some(e => e.x === x && e.y === y)) {
-      x = Math.floor(Math.random() * this.lengthX);
-      y = Math.floor(Math.random() * this.lengthY);
-    }
-
-    return new AppleModel(x, y);
   }
 
   nextStep() {
@@ -133,7 +120,7 @@ export class GameService {
 
     // Check if the snake eats an apple
     if (head.x === this.apple.x && head.y === this.apple.y) {
-      this.apple = this.generateApple();
+      this.apple = this.difficulty.generateApple(this.snake, this.lengthX, this.lengthY);
       this.incrementsScore();
     }
 

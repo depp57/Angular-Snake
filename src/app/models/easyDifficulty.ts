@@ -1,5 +1,6 @@
 import {Difficulty, isInGrid} from './difficulty';
 import {SnakeModel} from './snake.model';
+import {AppleModel} from './apple.model';
 
 export class EasyDifficulty implements Difficulty {
 
@@ -36,5 +37,18 @@ export class EasyDifficulty implements Difficulty {
     }
 
     return true;
+  }
+
+  generateApple(snake: SnakeModel, lengthX: number, lengthY: number): AppleModel {
+    let x = Math.floor(Math.random() * lengthX);
+    let y = Math.floor(Math.random() * lengthY);
+
+    // Because we don't want the apple to be on the snake
+    while (snake.cells.some(e => e.x === x && e.y === y)) {
+      x = Math.floor(Math.random() * lengthX);
+      y = Math.floor(Math.random() * lengthY);
+    }
+
+    return new AppleModel(x, y);
   }
 }

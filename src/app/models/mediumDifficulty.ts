@@ -1,5 +1,7 @@
 import {Difficulty, isInGrid} from './difficulty';
 import {SnakeModel} from './snake.model';
+import {AppleModel} from './apple.model';
+import {EasyDifficulty} from './easyDifficulty';
 
 export class MediumDifficulty implements Difficulty {
 
@@ -21,5 +23,9 @@ export class MediumDifficulty implements Difficulty {
     }
 
     return false;
+  }
+
+  generateApple(snake: SnakeModel, lengthX: number, lengthY: number): AppleModel {
+    return EasyDifficulty.prototype.generateApple(snake, lengthX, lengthY);
   }
 }
