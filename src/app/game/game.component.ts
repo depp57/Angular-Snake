@@ -85,7 +85,7 @@ export class GameComponent implements OnInit, OnDestroy {
     );
 
     // Dynamically compute the length of the map, to make the game fit the entire screen responsively
-    const lengthX = 17;
+    const lengthX = 20;
     const lengthY = Math.floor(lengthX * this.canvas.height / this.canvas.width);
     this.dx = this.canvas.width / lengthX;
     this.dy = this.canvas.height / lengthY;
@@ -110,7 +110,14 @@ export class GameComponent implements OnInit, OnDestroy {
       }
     };
 
-    this.animationFrameId = window.requestAnimationFrame(step(0));
+    this.drawRocks();
+    const startListener = () => {
+      this.animationFrameId = window.requestAnimationFrame(step(0));
+      this.canvas.removeEventListener('keydown', startListener);
+      this.canvas.removeEventListener('touchstart', startListener);
+    };
+    this.canvas.addEventListener('keydown', startListener);
+    this.canvas.addEventListener('touchstart', startListener);
   }
 
   private drawSnake(snake: SnakeModel) {
@@ -208,7 +215,7 @@ export class GameComponent implements OnInit, OnDestroy {
     if (!this.rocks) return;
 
     this.rocks.forEach(rock => {
-      this.canvasCtx.drawImage(this.rockSprite, rock.x, rock.y, this.dx, this.dy);
+      this.canvasCtx.drawImage(this.rockSprite, rock.x * this.dx, rock.y * this.dx, this.dx, this.dy);
     });
   }
 

@@ -49,15 +49,15 @@ export class GameService {
     this.snake = new SnakeModel([
       {
         x: Math.floor(this.lengthX / 2),
-        y: Math.floor(this.lengthY / 2) + 2
+        y: 2
       },
       {
         x: Math.floor(this.lengthX / 2),
-        y: Math.floor(this.lengthY / 2) + 1
+        y: 1
       },
       {
         x: Math.floor(this.lengthX / 2),
-        y: Math.floor(this.lengthY / 2)
+        y: 0
       }], Direction.SOUTH
     );
 
