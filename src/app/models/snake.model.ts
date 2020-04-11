@@ -1,6 +1,6 @@
 export class SnakeModel {
 
-  constructor(public cells: { x: number; y: number }[]) {}
+  constructor(public cells: { x: number; y: number }[], public direction: {x: number; y: number}) {}
 
   grows() {
     const lastCell = this.cells[this.cells.length - 1];

@@ -35,6 +35,7 @@ export class GameService {
   private hasMoved = false;
 
   private ended: boolean;
+  isEndedSubject: Subject<boolean> = new Subject<boolean>();
 
   startGame(difficulty: GameDifficulties, lengthX: number, lengthY: number) {
     this.difficulty = difficulty;
@@ -57,7 +58,7 @@ export class GameService {
       {
         x: Math.floor(this.lengthX / 2),
         y: Math.floor(this.lengthY / 2)
-      }]
+      }], Direction.SOUTH
     );
 
     this.apple = this.generateApple();
@@ -126,6 +127,7 @@ export class GameService {
   changeDirection(direction: {x: number; y: number}) {
     if (this.hasMoved && this.currentDirection.x !== direction.x && this.currentDirection.y !== direction.y) {
       this.currentDirection = direction;
+      this.snake.direction = direction;
       this.hasMoved = false;
     }
   }
@@ -155,5 +157,6 @@ export class GameService {
 
   private endGame() {
     this.ended = true;
+    this.isEndedSubject.next(true);
   }
 }

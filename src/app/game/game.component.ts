@@ -17,14 +17,18 @@ export class GameComponent implements OnInit, OnDestroy {
   canvasCtx: CanvasRenderingContext2D;
   canvasWmid: number;
   canvasHmid: number;
-  radiusX;
-  radiusY;
+  dx;
+  dy;
+  snakeSprites;
 
   snakeSubscription: Subscription;
+  isGameEndedSubscription: Subscription;
 
   animationFrameId: number;
 
   constructor(private gameService: GameService) {
+    this.snakeSprites = new Image();
+    this.snakeSprites.src = 'assets/snakeSprites.png';
   }
 
   ngOnInit(): void {
@@ -56,7 +60,7 @@ export class GameComponent implements OnInit, OnDestroy {
       // Add the listener to let the user choose one difficulty in the menu
       this.addOneTimeClickListener();
     });
-    menuImage.setAttribute('src', 'assets/gameMenu.png');
+    menuImage.src = 'assets/gameMenu.png';
   }
 
   startGame(difficulty: GameDifficulties) {
@@ -71,11 +75,16 @@ export class GameComponent implements OnInit, OnDestroy {
       snake => this.drawSnake(snake)
     );
 
+    // Subscribe to the game status, to know when the game end (the player lose)
+    this.isGameEndedSubscription = this.gameService.isEndedSubject.subscribe(
+      isEnded => { if (isEnded) this.endGame(); }
+    );
+
     // Dynamically compute the length of the map, to make the game fit the entire screen responsively
     const lengthX = 17;
     const lengthY = Math.floor(lengthX * this.canvas.height / this.canvas.width);
-    this.radiusX = this.canvas.width / lengthX / 2;
-    this.radiusY = this.canvas.height / lengthY / 2;
+    this.dx = this.canvas.width / lengthX;
+    this.dy = this.canvas.height / lengthY;
 
     if (lengthY < 8) {
       alert('Désolé, votre écran est trop petit pour le serpent :/');
@@ -98,35 +107,106 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private drawSnake(snake: SnakeModel) {
+    // Erase all old drawings
     this.canvasCtx.fillStyle = 'black';
     this.canvasCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.canvasCtx.beginPath();
-    this.canvasCtx.fillStyle = 'green';
-    snake.cells.forEach(
-      cell => {
-        this.canvasCtx.ellipse(this.radiusX * 2 * cell.x + this.radiusX, this.radiusY * 2 * cell.y + this.radiusY,
-          this.radiusX, this.radiusY,
-          0, 0, 2 * Math.PI);
 
-        this.canvasCtx.fill();
-        this.canvasCtx.closePath();
+
+    // Sprite column and row that get calculated
+    let spriteX;
+    let spriteY;
+
+    // Draw his head
+    switch (snake.direction) {
+      case Direction.NORTH :
+        spriteX = 3; spriteY = 0;
+        break;
+      case Direction.EAST :
+        spriteX = 4; spriteY = 0;
+        break;
+      case Direction.SOUTH :
+        spriteX = 4; spriteY = 1;
+        break;
+      case Direction.WEST :
+        spriteX = 3; spriteY = 1;
+        break;
+    }
+    this.canvasCtx.drawImage(this.snakeSprites, spriteX * 64, spriteY * 64,
+      64, 64,
+      this.dx * snake.cells[0].x, this.dy * snake.cells[0].y,
+      this.dx, this.dy);
+
+
+    // Draw his body
+    for (let i = 1; i < snake.cells.length - 1; i++) {
+      const prevCell = snake.cells[i + 1];
+      const nextCell = snake.cells[i - 1];
+      const currentCell = snake.cells[i];
+
+      if (prevCell.x !== currentCell.x && nextCell.x !== currentCell.x) {
+        spriteX = 1; spriteY = 0; // Horizontal left-right
       }
-    );
+      else if (prevCell.x < currentCell.x && nextCell.y > currentCell.y
+      || prevCell.y > currentCell.y && nextCell.x < currentCell.x) {
+        spriteX = 2; spriteY = 0; // Angle left-down
+      }
+      else if (prevCell.y !== currentCell.y && nextCell.y !== currentCell.y) {
+        spriteX = 2; spriteY = 1; // Vertical up-down
+      }
+      else if (prevCell.y < currentCell.y && nextCell.x < currentCell.x
+      || prevCell.x < currentCell.x && nextCell.y < currentCell.y) {
+        spriteX = 2; spriteY = 2; // Angle top-left
+      }
+      else if (prevCell.x > currentCell.x && nextCell.y < currentCell.y
+      || prevCell.y < currentCell.y && nextCell.x > currentCell.x) {
+        spriteX = 0; spriteY = 1; // Angle right-up
+      }
+      else {
+        spriteX = 0; spriteY = 0; // Angle down-right
+      }
+
+      this.canvasCtx.drawImage(this.snakeSprites, spriteX * 64, spriteY * 64,
+        64, 64,
+        this.dx * currentCell.x, this.dy * currentCell.y,
+        this.dx, this.dy);
+    }
+
+    // Draw his tail
+    const tail = snake.cells[snake.cells.length - 1];
+    const beforeTail = snake.cells[snake.cells.length - 2];
+
+    if (beforeTail.x > tail.x) {
+      spriteX = 4; spriteY = 2;
+    }
+    else if (beforeTail.y > tail.y) {
+      spriteX = 4; spriteY = 3;
+    }
+    else if (beforeTail.x < tail.x) {
+      spriteX = 3; spriteY = 3;
+    }
+    else {
+      spriteX = 3; spriteY = 2;
+    }
+
+    this.canvasCtx.drawImage(this.snakeSprites, spriteX * 64, spriteY * 64,
+      64, 64,
+      this.dx * tail.x, this.dy * tail.y,
+      this.dx, this.dy);
+
     this.drawApple(this.gameService.apple);
   }
 
   private drawApple(apple: AppleModel) {
-    this.canvasCtx.beginPath();
-    this.canvasCtx.fillStyle = 'red';
-    this.canvasCtx.ellipse(this.radiusX * apple.x * 2 + this.radiusX, this.radiusY * 2 * apple.y + this.radiusY,
-      this.radiusX, this.radiusY,
-      0, 0, 2 * Math.PI);
-    this.canvasCtx.fill();
+    this.canvasCtx.drawImage(this.snakeSprites, 0, 192,
+      64, 64,
+      this.dx * apple.x, this.dy * apple.y,
+      this.dx, this.dy);
   }
 
   ngOnDestroy(): void {
     // To avoid memory leak
     if (this.snakeSubscription) this.snakeSubscription.unsubscribe();
+    if (this.isGameEndedSubscription) this.isGameEndedSubscription.unsubscribe();
     window.cancelAnimationFrame(this.animationFrameId);
   }
 
@@ -221,5 +301,9 @@ export class GameComponent implements OnInit, OnDestroy {
     this.canvas.removeEventListener('touchmove', moveTouch);
     this.canvas.addEventListener('touchstart', startTouch);
     this.canvas.addEventListener('touchmove', moveTouch);
+  }
+
+  private endGame() {
+    // TODO
   }
 }
