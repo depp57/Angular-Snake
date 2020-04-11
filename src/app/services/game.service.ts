@@ -2,12 +2,10 @@ import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 import {SnakeModel} from '../models/snake.model';
 import {AppleModel} from '../models/apple.model';
-
-export enum GameDifficulties {
-  EASY,
-  MEDIUM,
-  HARD,
-}
+import {Difficulty} from '../models/difficulty';
+import {EasyDifficulty} from '../models/easyDifficulty';
+import {MediumDifficulty} from '../models/mediumDifficulty';
+import {HardDifficulty} from '../models/hardDifficulty';
 
 export const Direction = {
   NORTH : { x: 0, y: -1},
@@ -19,11 +17,12 @@ export const Direction = {
 @Injectable({providedIn: 'root'})
 export class GameService {
 
-  private difficulty: GameDifficulties;
+  private difficulty: Difficulty;
 
   private snake: SnakeModel;
   snakeSubject: Subject<SnakeModel> = new Subject<SnakeModel>();
   apple: AppleModel;
+  rocks: {x: number, y: number}[];
 
   private score: number;
   scoreSubject: Subject<number> = new Subject<number>();
@@ -31,19 +30,20 @@ export class GameService {
   private lengthX: number;
   private lengthY: number;
 
-  private currentDirection = Direction.SOUTH;
+  private currentDirection;
   private hasMoved = false;
 
   private ended: boolean;
   isEndedSubject: Subject<boolean> = new Subject<boolean>();
 
-  startGame(difficulty: GameDifficulties, lengthX: number, lengthY: number) {
-    this.difficulty = difficulty;
+  startGame(difficulty: string, lengthX: number, lengthY: number) {
     this.ended = false;
     this.score = 0;
+    this.currentDirection = Direction.SOUTH;
     this.scoreSubject.next(this.score);
     this.lengthX = lengthX;
     this.lengthY = lengthY;
+    this.rocks = [];
 
     // Emit the 'first' snake and apple
     this.snake = new SnakeModel([
@@ -60,6 +60,22 @@ export class GameService {
         y: Math.floor(this.lengthY / 2)
       }], Direction.SOUTH
     );
+
+    let diff;
+    switch (difficulty) {
+      case 'easy' :
+        diff = new EasyDifficulty();
+        break;
+      case 'medium' :
+        diff = new MediumDifficulty();
+        break;
+      case 'hard' :
+        const hard = new HardDifficulty(lengthX, lengthY, this.snake);
+        diff = hard;
+        this.rocks = hard.rocks;
+        break;
+    }
+    this.difficulty = diff;
 
     this.apple = this.generateApple();
     this.emitSnake();
@@ -90,38 +106,10 @@ export class GameService {
   }
 
   private moveSnake() {
-    const head = this.snake.cells[0];
-    const nextHead = {
-      x: head.x + this.currentDirection.x,
-      y: head.y + this.currentDirection.y
-    };
-
-    this.snake.cells.pop();
-
-    if (this.isInGrid(nextHead.x, nextHead.y)) {
-      this.snake.cells.unshift(nextHead);
-    }
-    else {
-      if (this.currentDirection.x === 1) {
-        this.snake.cells.unshift({x: 0, y: head.y});
-      }
-      else if (this.currentDirection.x === -1) {
-        this.snake.cells.unshift({x: this.lengthX - 1, y: head.y});
-      }
-      else if (this.currentDirection.y === 1) {
-        this.snake.cells.unshift({x: head.x, y: 0});
-      }
-      else {
-        this.snake.cells.unshift({x: head.x, y: this.lengthY - 1});
-      }
-    }
-
+    // If the snake can't move, the player lose
+    if (!this.difficulty.moveSnake(this.snake, this.currentDirection, this.lengthX, this.lengthY)) this.endGame();
     this.checkCollision();
     this.hasMoved = true;
-  }
-
-  private isInGrid(x: number, y: number) {
-    return x >= 0 && x < this.lengthX && y >= 0 && y < this.lengthY;
   }
 
   changeDirection(direction: {x: number; y: number}) {
@@ -133,7 +121,7 @@ export class GameService {
   }
 
   private incrementsScore() {
-    this.score++;
+    this.score += this.difficulty.getScoreValue();
     this.scoreSubject.next(this.score);
 
     // And grows the snake
