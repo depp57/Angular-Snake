@@ -11,7 +11,6 @@ export class AudioService {
 
   playAudio(name: string) {
     this.currentAudio = new Audio('assets/' + name);
-    this.currentAudio.play();
     this.currentAudio.volume = 0.15;
     this.currentAudio.loop = true;
   }
