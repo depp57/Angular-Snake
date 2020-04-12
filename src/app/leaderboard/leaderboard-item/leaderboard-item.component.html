@@ -1,0 +1,16 @@
+<div class="list-group-item rank">
+  <div class="row" *ngIf="rang===1">
+    <div class="col-sm text-center">
+      <img src="assets/firstRank.png">
+    </div>
+    <div class="col-sm text-center my-auto">{{name}}</div>
+    <div class="col-sm text-center my-auto">{{score}}</div>
+  </div>
+
+  <div class="row " *ngIf="rang!==1">
+    <div class="col-sm text-center">{{rang}}</div>
+    <div class="col-sm text-center">{{name}}</div>
+    <div class="col-sm text-center">{{score}}</div>
+  </div>
+</div>
+

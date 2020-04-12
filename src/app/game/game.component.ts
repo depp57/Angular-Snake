@@ -3,6 +3,7 @@ import {Direction, GameService} from '../services/game.service';
 import {Subscription} from 'rxjs';
 import {SnakeModel} from '../models/snake.model';
 import {AppleModel} from '../models/apple.model';
+import {ScoreService} from '../services/score.service';
 
 
 @Component({
@@ -62,8 +63,8 @@ export class GameComponent implements OnInit, OnDestroy {
       this.canvasCtx.drawImage(menuImage, this.canvasWmid - imgWmid, this.canvasHmid - imgHmid);
 
       // Add the listener to let the user choose one difficulty in the menu
-      this.menuListener();
-    });
+      this.addMenuListener();
+    }, {once: true});
     menuImage.src = 'assets/gameMenu.png';
   }
 
@@ -111,13 +112,9 @@ export class GameComponent implements OnInit, OnDestroy {
     };
 
     this.drawRocks();
-    const startListener = () => {
-      this.animationFrameId = window.requestAnimationFrame(step(0));
-      this.canvas.removeEventListener('keydown', startListener);
-      this.canvas.removeEventListener('touchstart', startListener);
-    };
-    this.canvas.addEventListener('keydown', startListener);
-    this.canvas.addEventListener('touchstart', startListener);
+
+    ['keydown', 'touchstart'].forEach((e) => this.canvas.addEventListener(e,
+      () => this.animationFrameId = window.requestAnimationFrame(step(0)), {once: true}));
   }
 
   private drawSnake(snake: SnakeModel) {
@@ -233,7 +230,7 @@ export class GameComponent implements OnInit, OnDestroy {
     window.cancelAnimationFrame(this.animationFrameId);
   }
 
-  private menuListener() {
+  private addMenuListener() {
     const oneTimeClickListener = (e) => {
 
       const deltaX = Math.abs(e.x - this.canvasWmid);
@@ -327,6 +324,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private endGame() {
-    // TODO
+    this.ngOnDestroy();
+    this.drawMenu();
   }
 }

@@ -1,0 +1,15 @@
+<div id="leaderboard" class="list-group">
+  <div class="list-group-item">
+    <div class="row h3">
+      <div class="col-sm text-center">Rang</div>
+      <div class="col-sm text-center">Nom</div>
+      <div class="col-sm text-center">Score</div>
+    </div>
+  </div>
+
+  <app-leaderboard-item *ngFor="let rank of ranks; index as i"
+                        [score]="rank.score"
+                        [name]="rank.name"
+                        [rang]="i + 1"
+  ></app-leaderboard-item>
+</div>

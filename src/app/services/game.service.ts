@@ -6,6 +6,7 @@ import {Difficulty} from '../models/difficulty';
 import {EasyDifficulty} from '../models/easyDifficulty';
 import {MediumDifficulty} from '../models/mediumDifficulty';
 import {HardDifficulty} from '../models/hardDifficulty';
+import {ScoreService} from './score.service';
 
 export const Direction = {
   NORTH : { x: 0, y: -1},
@@ -16,6 +17,8 @@ export const Direction = {
 
 @Injectable({providedIn: 'root'})
 export class GameService {
+
+  constructor(private scoreService: ScoreService) {}
 
   private difficulty: Difficulty;
 
@@ -133,5 +136,6 @@ export class GameService {
   private endGame() {
     this.ended = true;
     this.isEndedSubject.next(true);
+    this.scoreService.saveScore(this.score);
   }
 }
