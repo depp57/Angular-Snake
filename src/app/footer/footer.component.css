@@ -5,4 +5,25 @@
   height: 60px; /* Set the fixed height of the footer here */
   line-height: 60px; /* Vertically center the text there */
   background-color: #f5f5f5;
+
+  display: grid;
+  grid-template-columns: 90% 10%;
+
+  align-items: center;
+  justify-items: center;
+}
+
+.center {
+  text-align:center;
+  margin-left: 10%;
+}
+
+@media (max-width: 800px) {
+  .center {
+    padding: 0;
+  }
+
+  .footer {
+    grid-template-columns: 70% 30%;
+  }
 }

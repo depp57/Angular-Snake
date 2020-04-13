@@ -118,8 +118,12 @@ export class GameComponent implements OnInit, OnDestroy {
 
     this.drawRocks();
 
-    ['keydown', 'touchstart'].forEach((e) => this.canvas.addEventListener(e,
-      () => this.animationFrameId = window.requestAnimationFrame(step(0)), {once: true}));
+    const listener = () => {
+      this.animationFrameId = window.requestAnimationFrame(step(0));
+      this.canvas.removeEventListener('keydown', listener);
+      this.canvas.removeEventListener('touchstart', listener);
+    };
+    ['keydown', 'touchstart'].forEach((e) => this.canvas.addEventListener(e, listener));
   }
 
   private drawSnake(snake: SnakeModel) {
