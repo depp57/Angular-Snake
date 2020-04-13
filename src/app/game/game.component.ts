@@ -3,7 +3,6 @@ import {Direction, GameService} from '../services/game.service';
 import {Subscription} from 'rxjs';
 import {SnakeModel} from '../models/snake.model';
 import {AppleModel} from '../models/apple.model';
-import {ScoreService} from '../services/score.service';
 
 
 @Component({
@@ -29,6 +28,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private animationFrameId: number;
 
+  private stopAnimation: boolean;
+
   constructor(private gameService: GameService) {
     this.snakeSprites = new Image();
     this.snakeSprites.src = 'assets/snakeSprites.png';
@@ -44,7 +45,7 @@ export class GameComponent implements OnInit, OnDestroy {
   private initCanvas() {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
 
-    // Resize le canvas pour qu'il occupe toute la fenetre
+    // Scale the canvas to make it fit the entire window
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
 
@@ -102,6 +103,10 @@ export class GameComponent implements OnInit, OnDestroy {
     this.rocks = this.gameService.rocks;
 
     const step = t1 => t2 => {
+      if (this.stopAnimation) {
+        this.stopAnimation = false;
+        return;
+      }
       if (t2 - t1 > 60) {
         this.gameService.nextStep();
         this.animationFrameId = window.requestAnimationFrame(step(t2));
@@ -228,6 +233,7 @@ export class GameComponent implements OnInit, OnDestroy {
     if (this.snakeSubscription) this.snakeSubscription.unsubscribe();
     if (this.isGameEndedSubscription) this.isGameEndedSubscription.unsubscribe();
     window.cancelAnimationFrame(this.animationFrameId);
+    this.stopAnimation = true;
   }
 
   private addMenuListener() {
