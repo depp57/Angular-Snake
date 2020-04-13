@@ -20,7 +20,10 @@ export class AuthService {
   createUser(name: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       firebase.auth().createUserWithEmailAndPassword(name, password)
-        .then(() => resolve(),
+        .then(() => {
+            resolve();
+            this.logInUser(name.split('@')[0]);
+          },
           error => reject(error));
     });
   }
