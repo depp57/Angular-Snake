@@ -14,7 +14,6 @@
   position: relative;
   top: 50vh;
   text-align: center;
-  text-align: -webkit-center;
 }
 
 #backGroundJungle {
@@ -24,4 +23,30 @@
   background-size: cover;
 
   height: 90vh;
+}
+
+@media (max-width: 600px) {
+  .dNoneMobile {
+    display: none;
+  }
+
+  .btn-responsive {
+    padding: 5px 8px;
+    font-size: 80%;
+    line-height: 1.8;
+  }
+
+  .form-responsive {
+    padding-top: 5px !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .input-responsive {
+    width: 50% !important;
+  }
+}
+
+.mt-10 {
+  margin-top: 6vw;
 }

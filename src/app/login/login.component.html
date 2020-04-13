@@ -1,25 +1,25 @@
 <div id="backGroundJungle" class="mt-n5">
   <div id="loginFormContainer">
-    <form id="loginForm" [formGroup]="loginForm">
+    <form id="loginForm" [formGroup]="loginForm" class="pt-4 form-responsive">
 
-      <div class="form-group w-25">
-        <label for="name" class="badge-pill badge-dark">Pseudo</label>
+      <div class="form-group w-25 mx-auto input-responsive">
+        <label for="name" class="badge-pill badge-dark dNoneMobile">Pseudo</label>
         <input type="text" id="name" autocomplete="username"
                class="form-control" formControlName="name" placeholder="Pseudo">
       </div>
 
-      <div class="form-group w-25">
-        <label for="password" class="badge-pill badge-dark">Mot de passe</label>
+      <div class="form-group w-25 mx-auto input-responsive mt-10">
+        <label for="password" class="badge-pill badge-dark dNoneMobile">Mot de passe</label>
         <input type="password" id="password" autocomplete="current-password"
                class="form-control" formControlName="password" placeholder="Mot de passe">
       </div>
 
 
-      <button class="btn btn-success btn-lg mr-2" [disabled]="loginForm.invalid"
+      <button class="btn btn-success btn-lg mr-2 btn-responsive" [disabled]="loginForm.invalid"
               type="submit" (click)="onSignUp()">Créer un compte
       </button>
 
-      <button class="btn btn-success btn-lg ml-2" [disabled]="loginForm.invalid"
+      <button class="btn btn-success btn-lg ml-2 btn-responsive" [disabled]="loginForm.invalid"
               type="button" (click)="onSignIn()">Se connecter</button>
 
       <div class="alert-danger w-25">{{ errorMessage }}</div>
