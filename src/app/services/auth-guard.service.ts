@@ -1,8 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
-import {AuthService} from './auth.service';
-import {Subscription} from 'rxjs';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 
 @Injectable({providedIn: 'root'})
 export class AuthGuardService implements CanActivate {

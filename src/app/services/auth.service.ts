@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Subject} from 'rxjs';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
 
 
 @Injectable({providedIn: 'root'})

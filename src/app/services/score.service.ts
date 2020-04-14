@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {AuthService} from './auth.service';
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/database';
 import DataSnapshot = firebase.database.DataSnapshot;
 import {RankModel} from '../models/rank.model';
 

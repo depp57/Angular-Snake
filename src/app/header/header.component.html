@@ -1,9 +1,9 @@
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-between mb-5 wood above">
+<nav class="navbar navbar-expand-sm justify-content-between wood above responsive-header" [ngClass]="{'notCollapsed': !isMenuCollapsed}">
 
-  <li class="nav-item navbar-brand navbar-nav">
+  <div class="nav-item navbar-brand navbar-nav">
     <button class="btn btn-dark" routerLink="game"
-       routerLinkActive="active">Jouer</button>
-  </li>
+       routerLinkActive="active" (click)="isMenuCollapsed = true">Jouer</button>
+  </div>
 
   <ul class="navbar-nav navbar-brand" *ngIf="!isAuth; else loggedInBloc">
     <li class="nav-item">
@@ -13,13 +13,19 @@
   </ul>
 
   <ng-template #loggedInBloc>
-    <ul class="navbar-nav navbar-brand">
-      <li class="nav-item">
-        <button class="btn btn-dark" routerLink="leaderboard" routerLinkActive="active">Classement</button>
-      </li>
-      <li class="nav-item">
-        <button class="btn btn-dark ml-2" (click)="onSignOut()">Se déconnecter</button>
-      </li>
-    </ul>
+    <button class="navbar-toggler btn btn-dark bg-dark" style="line-height: 1.5" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+      &#9776;
+    </button>
+
+    <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse flex-grow-0">
+      <ul class="navbar-nav mr-auto navbar-brand horizontal-nav">
+        <li class="nav-item">
+          <button class="btn btn-dark" routerLink="leaderboard" routerLinkActive="active" (click)="isMenuCollapsed = true">Classement</button>
+        </li>
+        <li class="nav-item ml-2">
+          <button class="btn btn-dark" (click)="onSignOut();isMenuCollapsed = true">Se déconnecter</button>
+        </li>
+      </ul>
+    </div>
   </ng-template>
 </nav>

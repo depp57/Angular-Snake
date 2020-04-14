@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import anime from 'animejs/lib/anime.es';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../services/auth.service';
 import {Router} from '@angular/router';
@@ -23,6 +22,7 @@ export class LoginComponent implements OnInit {
   }
 
   animeForm() {
+    // @ts-ignore
     anime({
       targets: '#loginFormContainer',
       translateY: 600,

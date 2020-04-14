@@ -12,6 +12,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isAuth: boolean;
   userSubscription: Subscription;
+  isMenuCollapsed = true;
 
   constructor(private authService: AuthService,
               private router: Router) {}

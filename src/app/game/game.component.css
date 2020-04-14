@@ -1,5 +1,11 @@
 #canvas {
   /* full screen */
-  height: 90vh;
+  height: calc(93.5vh - 60px);
   width: 100vw;
+}
+
+@media (max-height: 800px) {
+  #canvas {
+    height: calc(90vh - 60px);
+  }
 }

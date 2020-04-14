@@ -1,3 +1,22 @@
 .above {
   z-index: 2;
 }
+
+.responsive-header {
+  height: 6.5vh;
+}
+
+.notCollapsed {
+  height: auto !important;
+}
+
+.horizontal-nav {
+  flex-direction: row;
+  place-content: space-between;
+}
+
+@media (max-height: 800px) {
+  .responsive-header {
+    height: 10vh;
+  }
+}
